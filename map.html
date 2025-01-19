@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastPark - Location View</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>FastPark</h1>
+    </header>
+    <main>
+        <h2 id="locationTitle">Parking Location</h2>
+        <div id="videoContainer" class="video-container">
+            <video id="parkingVideo" controls>
+                <source src="carPark.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="location-info">
+            <p id="locationDescription">Select a location to view details and video.</p>
+        </div>
+        <a href="dashboard.html" class="btn btn-blue">Back to Dashboard</a>
+    </main>
+    <footer>
+        <p>&copy; 2025 FastPark. All Rights Reserved.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const location = urlParams.get('location');
+            const category = urlParams.get('category');
+
+            const locationTitle = document.getElementById('locationTitle');
+            const locationDescription = document.getElementById('locationDescription');
+            const video = document.getElementById('parkingVideo');
+
+            if (location) {
+                locationTitle.textContent = location;
+                locationDescription.textContent = `Viewing parking information for ${location} (${category}).`;
+                
+                // Use a default video for now
+                video.src = 'carpark.mp4';
+                video.style.display = 'block';
+            } else {
+                locationTitle.textContent = 'Location Not Found';
+                locationDescription.textContent = 'Please select a valid location from the dashboard.';
+                video.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+

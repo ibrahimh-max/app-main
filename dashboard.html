@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastPark - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>FastPark</h1>
+    </header>
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#" class="nav-item" data-category="mall">Malls</a></li>
+            <li><a href="#" class="nav-item" data-category="office">Offices</a></li>
+            <li><a href="#" class="nav-item" data-category="airport">Airports</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for parking...">
+            <button id="searchButton" class="btn btn-blue">Search</button>
+        </div>
+        <div id="suggestions" class="suggestions"></div>
+        <a href="map.html" class="btn btn-green" id="goToMapBtn">Go to Parking Map</a>
+    </main>
+    <footer>
+        <p>&copy; 2025 FastPark. All Rights Reserved.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const suggestionsContainer = document.getElementById('suggestions');
+            const goToMapBtn = document.getElementById('goToMapBtn');
+
+            const categoryData = {
+                mall: ['City Center Mall', 'Westfield Mall', 'Outlet Village', 'Grand Shopping Plaza'],
+                office: ['Downtown Office Park', 'Tech Hub', 'Business District Center', 'Corporate Plaza'],
+                airport: ['Terminal A', 'Terminal B', 'Long-term Parking', 'Short-term Parking']
+            };
+
+            let currentCategory = 'mall'; // Default category
+
+            function showSuggestions(searchTerm) {
+                const items = categoryData[currentCategory].filter(item => 
+                    item.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                suggestionsContainer.innerHTML = items.length ? `
+                    <ul>
+                        ${items.map(item => `<li><a href="#" data-location="${item}">${item}</a></li>`).join('')}
+                    </ul>
+                ` : '<p>No matching locations found.</p>';
+
+                suggestionsContainer.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const location = this.getAttribute('data-location');
+                        searchInput.value = location;
+                        suggestionsContainer.innerHTML = '';
+                        goToMapBtn.textContent = `Find Parking at ${location}`;
+                        goToMapBtn.href = `map.html?category=${currentCategory}&location=${encodeURIComponent(location)}`;
+                    });
+                });
+            }
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value;
+                if (searchTerm.length > 0) {
+                    showSuggestions(searchTerm);
+                } else {
+                    suggestionsContainer.innerHTML = '';
+                }
+            });
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentCategory = this.getAttribute('data-category');
+                    searchInput.value = ''; // Clear the search input
+                    suggestionsContainer.innerHTML = ''; // Clear suggestions
+                    navItems.forEach(navItem => navItem.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            searchButton.addEventListener('click', function() {
+                const searchTerm = searchInput.value;
+                if (searchTerm) {
+                    showSuggestions(searchTerm);
+                }
+            });
+
+            // Set the first category (Malls) as active by default
+            navItems[0].classList.add('active');
+        });
+    </script>
+</body>
+</html>
+
